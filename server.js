@@ -21,8 +21,10 @@ app.get("/api/notes", function(req, res) {
 });
 // POST `/api/notes` - Should receive a new note to save on the request body, add it to the `db.json` file, and then return the new note to the client.
 app.post("/api/notes", function(req, res) {
+    console.log(req.body)
+
 //   notesDB.push(req.body);
-  // res.json(notesDB);
+  res.json(true);
 });
 
 // DELETE `/api/notes/:id` -
