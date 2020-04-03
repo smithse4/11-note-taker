@@ -9,8 +9,12 @@ const PORT = process.env.PORT || 3000;
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.use(express.static("public"));
+
 // GET ROUTE FOR /NOTES TO RETURN NOTES.HTML
 app.get("/notes", function(req, res) {
+  console.log(notesDB);
+  console.log(JSON.stringify(notesDB));
   res.sendFile(path.join(__dirname, "/public/notes.html"));
 });
 
@@ -21,9 +25,13 @@ app.get("/api/notes", function(req, res) {
 });
 // POST `/api/notes` - Should receive a new note to save on the request body, add it to the `db.json` file, and then return the new note to the client.
 app.post("/api/notes", function(req, res) {
-    console.log(req.body)
+  console.log(req.body);
 
-//   notesDB.push(req.body);
+  notesDB.push(req.body);
+  //   append JSON file with new post
+  fs.writeFile("./db/db.json", JSON.stringify(notesDB), function() {
+    console.log("Yay!");
+  });
   res.json(true);
 });
 
