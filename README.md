@@ -12,6 +12,9 @@ Create an application that can be used to write, save, and delete notes. This ap
 
   * GET `*` - Should return the `index.html` file. See image below.
 
+![Notes Home](./public/assets/img/notes-home.png)
+![Notes Page](./public/assets/img/notes-list.png)
+
 * The application should have a `db.json` file on the backend that will be used to store and retrieve notes using the `fs` module.
 
 * The following API routes should be created:
@@ -42,10 +45,8 @@ Application should allow users to view previously saved notes.
 
 Application should allow users to delete previously saved notes.
 
-## Submission on BCS
+## Links
 
-You are required to submit the following:
-
-[Deployed Application]()
+[Deployed Application](https://dry-bastion-42539.herokuapp.com/)
 
 [GitHub Repo](https://github.com/smithse4/11-note-taker)
