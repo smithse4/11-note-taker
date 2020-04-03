@@ -57,7 +57,7 @@ var handleNoteSave = function() {
     title: $noteTitle.val(),
     text: $noteText.val()
   };
-alert("Button clicked")
+// alert("Your notes has been saved!")
   saveNote(newNote).then(function(data) {
     getAndRenderNotes();
     renderActiveNote();

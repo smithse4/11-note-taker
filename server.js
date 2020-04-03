@@ -12,25 +12,32 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // GET ROUTE FOR /NOTES TO RETURN NOTES.HTML
-app.get("/notes", function(req, res) {
-  console.log(notesDB);
-  console.log(JSON.stringify(notesDB));
+app.get("/notes", function (req, res) {
+  // console.log(notesDB);
+  // console.log(JSON.stringify(notesDB));
   res.sendFile(path.join(__dirname, "/public/notes.html"));
 });
 
 // `db.json` file on the backend that will be used to store and retrieve notes using the `fs` module
 // GET `/api/notes` - Should read the `db.json` file and return all saved notes as JSON.
-app.get("/api/notes", function(req, res) {
+app.get("/api/notes", function (req, res) {
   res.json(notesDB);
 });
-// POST `/api/notes` - Should receive a new note to save on the request body, add it to the `db.json` file, and then return the new note to the client.
-app.post("/api/notes", function(req, res) {
-  console.log(req.body);
+// Assign id to notes
+app.get("/api/notes/:id", function (req, res) {
+  let savedNotes = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
+  res.json(savedNotes[Number(req.params.id)]);
+});
 
+// POST `/api/notes` - Should receive a new note to save on the request body, add it to the `db.json` file, and then return the new note to the client.
+app.post("/api/notes", function (req, res) {
+  // console.log(req.body);
+  let uniqueID = notesDB.length.toString();
+  req.body.id = uniqueID;
   notesDB.push(req.body);
-  //   append JSON file with new post
-  fs.writeFile("./db/db.json", JSON.stringify(notesDB), function() {
-    console.log("Yay!");
+  //   write JSON file with new post
+  fs.writeFile("./db/db.json", JSON.stringify(notesDB), function () {
+    // console.log("Yay!");
   });
   res.json(true);
 });
@@ -42,8 +49,26 @@ app.post("/api/notes", function(req, res) {
 // remove the note with the given `id` property, and then
 // rewrite the notes to the `db.json` file.
 
+app.delete("/api/notes/:id", function (req, res) {
+  let notesDB = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
+  let noteID = req.params.id;
+  let newID = 0;
+  // console.log(`Delete note ID: ${noteID}`);
+  notesDB = notesDB.filter((currentNote) => {
+    return currentNote.id != noteID;
+  });
+
+  for (currentNote of notesDB) {
+    currentNote.id = newID.toString();
+    newID++;
+  }
+
+  fs.writeFileSync("./db/db.json", JSON.stringify(notesDB));
+  res.json(notesDB);
+});
+
 // GET * - Should return the `index.html` file
-app.get("*", function(req, res) {
+app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "/public/index.html"));
 });
 
