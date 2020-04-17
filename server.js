@@ -2,6 +2,9 @@ const express = require("express");
 const path = require("path");
 const fs = require("fs");
 const notesDB = require("./db/db.json");
+const { v4: uuidv4 } = require("uuid");
+const util = require("util")
+const writeFileAsync = util.promisify(fs.writeFile);
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -31,9 +34,7 @@ app.get("/api/notes/:id", function (req, res) {
 
 // POST `/api/notes` - Should receive a new note to save on the request body, add it to the `db.json` file, and then return the new note to the client.
 app.post("/api/notes", function (req, res) {
-  // console.log(req.body);
-  let uniqueID = notesDB.length.toString();
-  req.body.id = uniqueID;
+  req.body.id = uuidv4();
   notesDB.push(req.body);
   //   write JSON file with new post
   fs.writeFile("./db/db.json", JSON.stringify(notesDB), function () {
@@ -52,19 +53,14 @@ app.post("/api/notes", function (req, res) {
 app.delete("/api/notes/:id", function (req, res) {
   let notesDB = JSON.parse(fs.readFileSync("./db/db.json", "utf8"));
   let noteID = req.params.id;
-  let newID = 0;
+  console.log(noteID);
   // console.log(`Delete note ID: ${noteID}`);
-  notesDB = notesDB.filter((currentNote) => {
+  newNotesDB = notesDB.filter((currentNote) => {
     return currentNote.id != noteID;
   });
 
-  for (currentNote of notesDB) {
-    currentNote.id = newID.toString();
-    newID++;
-  }
-
-  fs.writeFileSync("./db/db.json", JSON.stringify(notesDB));
-  res.json(notesDB);
+  writeFileAsync("./db/db.json", JSON.stringify(newNotesDB))
+  .then(() => res.json(newNotesDB));
 });
 
 // GET * - Should return the `index.html` file
