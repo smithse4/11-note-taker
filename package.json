@@ -11,7 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.16.4",
-    "uuid": "^7.0.3"
+    "uuid": "^7.0.3",
+    "uuidv4": "^6.2.12"
   },
   "repository": {
     "type": "git",
